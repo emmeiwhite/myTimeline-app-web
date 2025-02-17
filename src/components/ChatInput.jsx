@@ -4,7 +4,7 @@ import { useAppContext } from '../context/MessagesContext'
 const ChatInput = () => {
   const [message, setMessage] = useState('')
 
-  const { currentUser, messages, setMessages, loggedInUser, setLoggedInUser } = useAppContext() // Context data
+  const { currentUser, messages, setMessages, loggedInUser } = useAppContext() // Context data
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -21,6 +21,17 @@ const ChatInput = () => {
       content: message,
       timestamp: new Date().toISOString()
     }
+
+    const updateCurrentChatMessages = [...chatMessages, newMessage]
+
+    setMessages(prevMessages => {
+      return {
+        ...prevMessages,
+        [chatKey]: updateCurrentChatMessages
+      }
+    })
+
+    setMessage('')
   }
   return (
     <form
