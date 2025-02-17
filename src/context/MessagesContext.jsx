@@ -26,7 +26,7 @@ const AppProvider = ({ children }) => {
     name: 'Emmei',
     avatar: 'https://avatar.iran.liara.run/public/43'
   })
-  const [currentUser, setCurrentUser] = useState(users[0]) // Default to Alice
+  const [currentUser, setCurrentUser] = useState(null) // Default to Alice
   const [messages, setMessages] = useState(initialMessages) // Array to hold messages
 
   const contextValue = {
