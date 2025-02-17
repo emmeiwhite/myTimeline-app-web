@@ -1,6 +1,6 @@
 import { useAppContext } from '../context/MessagesContext'
 const Sidebar = () => {
-  const { users, setCurrentUser } = useAppContext()
+  const { users, setCurrentUser, currentUser } = useAppContext()
 
   return (
     <div className="p-4 w-1/4 bg-blue-300">
@@ -9,7 +9,9 @@ const Sidebar = () => {
         {users.map(user => (
           <li
             key={user.id}
-            className="flex items-center p-2 cursor-pointer hover:bg-blue-400 rounded"
+            className={`flex items-center p-2 cursor-pointer hover:bg-blue-400 rounded ${
+              currentUser.id === user.id ? 'bg-blue-400' : ''
+            }`}
             onClick={() => setCurrentUser(user)}>
             <img
               src={user.avatar}
