@@ -21,8 +21,6 @@ const ChatInput = () => {
       content: message,
       timestamp: new Date().toISOString()
     }
-
-    console.log(newMessage)
   }
   return (
     <form

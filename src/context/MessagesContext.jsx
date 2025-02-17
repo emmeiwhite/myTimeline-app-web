@@ -19,14 +19,14 @@ const AppContext = createContext()
 
 // Context provider component
 const AppProvider = ({ children }) => {
-  const [users] = useState(initialUsers)
+  const [users, setUsers] = useState(initialUsers)
 
   const [loggedInUser, setLoggedInUser] = useState({
     id: 'user-a',
     name: 'Emmei',
     avatar: 'https://avatar.iran.liara.run/public/43'
   })
-  const [currentUser, setCurrentUser] = useState(null) // Default to Alice
+  const [currentUser, setCurrentUser] = useState(null) // Initially no chat-partner would be selected
   const [messages, setMessages] = useState(initialMessages) // Array to hold messages
 
   const contextValue = {
