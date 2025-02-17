@@ -1,9 +1,9 @@
 import { createContext, useState, useContext } from 'react'
 
 const initialUsers = [
-  { id: 'user-a', name: 'Alice', avatar: 'https://via.placeholder.com/50' },
-  { id: 'user-b', name: 'Bob', avatar: 'https://via.placeholder.com/50' },
-  { id: 'user-c', name: 'Charlie', avatar: 'https://via.placeholder.com/50' }
+  { id: 'user-a', name: 'Imran', avatar: 'https://via.placeholder.com/50' },
+  { id: 'user-b', name: 'Adi', avatar: 'https://via.placeholder.com/50' },
+  { id: 'user-c', name: 'Sahil', avatar: 'https://via.placeholder.com/50' }
 ]
 // Create the context
 const AppContext = createContext()

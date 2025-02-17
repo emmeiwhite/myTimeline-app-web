@@ -3,13 +3,13 @@ const Sidebar = () => {
   const { users, setCurrentUser } = useAppContext()
 
   return (
-    <div className="p-4 w-64 bg-gray-100">
-      <h2 className="text-xl font-bold mb-4">Chat one-on-one App</h2>
+    <div className="p-4 w-1/4 bg-blue-300">
+      <h2 className="text-xl font-medium mb-4 ">One-on-One Chat 💬</h2>
       <ul>
         {users.map(user => (
           <li
             key={user.id}
-            className="flex items-center p-2 cursor-pointer hover:bg-gray-400 rounded"
+            className="flex items-center p-2 cursor-pointer hover:bg-blue-400 rounded"
             onClick={() => setCurrentUser(user)}>
             <img
               src={user.avatar}
