@@ -1,6 +1,6 @@
 import { useAppContext } from '../context/MessagesContext'
 const Sidebar = () => {
-  const { users, setCurrentUser, currentUser, loggedInUser } = useAppContext()
+  const { users, setCurrentUser, currentUser } = useAppContext()
   console.log(users)
 
   return (
