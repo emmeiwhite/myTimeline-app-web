@@ -14,16 +14,16 @@ const ChatMessages = () => {
 
   /* Just keeping for the reference, because we'll require this or similar login in BE now*/
   const chatKey = [loggedInUser.id, currentUser.id].sort().join('_')
-  const chatMessages = messages[chatKey] || []
+  // const chatMessages = messages[chatKey] || []
 
   return (
     <section className="flex-1 overflow-y-auto p-4 bg-green-50">
-      {chatMessages?.length === 0 ? (
+      {messages?.length === 0 ? (
         <p className="text-gray-500 text-center">No messages yet. Say hi! 👋</p>
       ) : (
         <ul className="space-y-2">
-          {chatMessages?.map(msg => {
-            const isMe = msg.sender === loggedInUser.id
+          {messages?.map(msg => {
+            const isMe = msg.senderId === loggedInUser.id
             return (
               <li
                 key={msg.id}

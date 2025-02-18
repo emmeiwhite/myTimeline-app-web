@@ -16,20 +16,31 @@ const ChatInput = () => {
 
     const chatMessages = messages[chatKey] || [] // Bringing the chatMessages of current two users, loggedInUser(Immi) and currentUser (Adi)
 
+    // const newMessage = {
+    //   sender: loggedInUser.id,
+    //   content: message,
+    //   timestamp: new Date().toISOString()
+    // }
+
     const newMessage = {
-      sender: loggedInUser.id,
+      id: 'msgXYZ',
+      chatId: chatKey,
+      senderId: loggedInUser.id,
+      receiverId: currentUser.id,
       content: message,
       timestamp: new Date().toISOString()
     }
 
-    const updateCurrentChatMessages = [...chatMessages, newMessage]
+    // const updateCurrentChatMessages = [...chatMessages, newMessage]
 
-    setMessages(prevMessages => {
-      return {
-        ...prevMessages,
-        [chatKey]: updateCurrentChatMessages
-      }
-    })
+    // setMessages(prevMessages => {
+    //   return {
+    //     ...prevMessages,
+    //     [chatKey]: updateCurrentChatMessages
+    //   }
+    // })
+
+    setMessages([...messages, newMessage])
 
     setMessage('')
   }
