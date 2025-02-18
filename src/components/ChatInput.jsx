@@ -11,7 +11,7 @@ const ChatInput = () => {
     // The task is to add the currentUser message onto the messages object
     if (message.trim() === '') return
 
-    const chatKey = [loggedInUser.id, currentUser.id].sort().join('_')
+    const chatKey = [loggedInUser._id, currentUser._id].sort().join('_')
     // We are using sort to  ensure consistency in the message storage key, regardless of who is the sender or receiver.
 
     const chatMessages = messages[chatKey] || [] // Bringing the chatMessages of current two users, loggedInUser(Immi) and currentUser (Adi)
@@ -25,8 +25,8 @@ const ChatInput = () => {
     const newMessage = {
       id: 'msgXYZ',
       chatId: chatKey,
-      senderId: loggedInUser.id,
-      receiverId: currentUser.id,
+      senderId: loggedInUser._id,
+      receiverId: currentUser._id,
       content: message,
       timestamp: new Date().toISOString()
     }

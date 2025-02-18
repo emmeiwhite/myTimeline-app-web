@@ -62,7 +62,7 @@ const AppProvider = ({ children }) => {
   const [users, setUsers] = useState([])
 
   const [loggedInUser, setLoggedInUser] = useState({
-    id: 'user-a',
+    _id: 'user-a',
     name: 'Emmei',
     avatar: 'https://avatar.iran.liara.run/public/43'
   })
@@ -70,7 +70,7 @@ const AppProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null) // Initially no chat-partner would be selected
   const [messages, setMessages] = useState() // Array to hold messages
 
-  // We need to fetch the Users first (to join their ids to make chatId of two individuals)
+  // 1) We need to fetch the Users first (to join their ids to make chatId of two individuals)
   async function fetchUsers() {
     try {
       const response = await axios.get('/api/users')
@@ -83,6 +83,26 @@ const AppProvider = ({ children }) => {
   useEffect(() => {
     fetchUsers()
   }, [])
+
+  // 2) Fetch messages when currentUser changes
+
+  async function fetchMessages() {
+    let chatId = [loggedInUser._id, currentUser._id].sort().join('_')
+    console.log('ChatId is:')
+    console.log(chatId)
+    // Similar way chatId should be generated in the BE as well while adding messages (Will check in a while)
+    try {
+      const response = await axios.get(`/api/messages/${chatId}`)
+      setMessages(response.data)
+    } catch (error) {
+      console.log(error.response)
+    }
+  }
+
+  useEffect(() => {
+    if (!currentUser) return // Don't fetch if no user is selected
+    fetchMessages()
+  }, [currentUser])
 
   const contextValue = {
     users,
