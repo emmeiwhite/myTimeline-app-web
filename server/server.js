@@ -2,8 +2,9 @@ const express = require('express')
 const server = express()
 
 const logger = require('./logger')
+const authenticate = require('./authenticate')
 
-server.use(logger)
+server.use([logger, authenticate])
 
 server.get('/', (req, res) => {
   console.log('I am the home route')
@@ -22,6 +23,7 @@ server.get('/api/cities', (req, res) => {
 
 server.get('/api/products', (req, res) => {
   console.log('Products')
+  console.log(req.user) // Modified by the authenticate middleware. We are getting the user info
   res.send('<h1>Products page</h1>')
 })
 
