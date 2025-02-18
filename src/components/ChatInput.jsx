@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { useAppContext } from '../context/MessagesContext'
+import axios from 'axios'
 
 const ChatInput = () => {
   const [message, setMessage] = useState('')
 
   const { currentUser, messages, setMessages, loggedInUser } = useAppContext() // Context data
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     // The task is to add the currentUser message onto the messages object
     if (message.trim() === '') return
@@ -14,16 +15,7 @@ const ChatInput = () => {
     const chatKey = [loggedInUser._id, currentUser._id].sort().join('_')
     // We are using sort to  ensure consistency in the message storage key, regardless of who is the sender or receiver.
 
-    const chatMessages = messages[chatKey] || [] // Bringing the chatMessages of current two users, loggedInUser(Immi) and currentUser (Adi)
-
-    // const newMessage = {
-    //   sender: loggedInUser.id,
-    //   content: message,
-    //   timestamp: new Date().toISOString()
-    // }
-
     const newMessage = {
-      id: 'msgXYZ',
       chatId: chatKey,
       senderId: loggedInUser._id,
       receiverId: currentUser._id,
@@ -31,16 +23,17 @@ const ChatInput = () => {
       timestamp: new Date().toISOString()
     }
 
-    // const updateCurrentChatMessages = [...chatMessages, newMessage]
+    // setMessages([...messages, newMessage]) We need to post data to the backend to have persistent data
 
-    // setMessages(prevMessages => {
-    //   return {
-    //     ...prevMessages,
-    //     [chatKey]: updateCurrentChatMessages
-    //   }
-    // })
+    try {
+      // Send the message to the backend
+      const response = await axios.post('/api/messages', newMessage)
 
-    setMessages([...messages, newMessage])
+      // Update local state with the saved message from backend
+      setMessages([...messages, response.data])
+    } catch (error) {
+      console.error('Error sending message:', error.response?.data || error.message)
+    }
 
     setMessage('')
   }

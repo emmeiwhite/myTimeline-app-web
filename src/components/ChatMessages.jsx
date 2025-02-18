@@ -13,7 +13,7 @@ const ChatMessages = () => {
   }
 
   /* Just keeping for the reference, because we'll require this or similar login in BE now*/
-  // const chatKey = [loggedInUser.id, currentUser.id].sort().join('_')
+  // const chatKey = [loggedInUser._id, currentUser._id].sort().join('_')
   // const chatMessages = messages[chatKey] || []
 
   return (
@@ -26,7 +26,7 @@ const ChatMessages = () => {
             const isMe = msg.senderId === loggedInUser._id
             return (
               <li
-                key={msg.id}
+                key={msg.timestamp}
                 className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                 <div
                   className={`p-2 max-w-xs rounded-lg ${
