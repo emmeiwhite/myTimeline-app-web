@@ -73,7 +73,7 @@ const AppProvider = ({ children }) => {
   // We need to fetch the Users first (to join their ids to make chatId of two individuals)
   async function fetchUsers() {
     try {
-      const response = await axios.get('http://localhost:5000/api/users')
+      const response = await axios.get('/api/users')
       console.log(response)
     } catch (error) {
       console.log(error.response)
