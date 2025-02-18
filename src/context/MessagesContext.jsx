@@ -1,5 +1,5 @@
-import { createContext, useState, useContext } from 'react'
-
+import { createContext, useState, useContext, useEffect } from 'react'
+import axios from 'axios'
 // Our Users of one-to-one app
 const initialUsers = [
   { id: 'user-a', name: 'Emmei', avatar: 'https://avatar.iran.liara.run/public/43' },
@@ -44,7 +44,10 @@ const AppContext = createContext()
 
 // Context provider component
 const AppProvider = ({ children }) => {
-  const [users, setUsers] = useState(initialUsers)
+  //  Let's fetch the real time data:
+
+  /* // ALL THE MOCK DATA FOR FE TO BE REPLACED BY BE REAL TIME DATA WITH APIS
+  const [users, setUsers] = useState([initialUsers])
 
   const [loggedInUser, setLoggedInUser] = useState({
     id: 'user-a',
@@ -54,6 +57,31 @@ const AppProvider = ({ children }) => {
 
   const [currentUser, setCurrentUser] = useState(null) // Initially no chat-partner would be selected
   const [messages, setMessages] = useState(initialMessages) // Array to hold messages
+*/
+
+  const [users, setUsers] = useState([])
+
+  const [loggedInUser, setLoggedInUser] = useState({
+    id: 'user-a',
+    name: 'Emmei',
+    avatar: 'https://avatar.iran.liara.run/public/43'
+  })
+
+  const [currentUser, setCurrentUser] = useState(null) // Initially no chat-partner would be selected
+  const [messages, setMessages] = useState() // Array to hold messages
+
+  // We need to fetch the Users first (to join their ids to make chatId of two individuals)
+  async function fetchUsers() {
+    try {
+      const response = await axios.get('http://localhost:5000/api/users')
+      console.log(response)
+    } catch (error) {
+      console.log(error.response)
+    }
+  }
+  useEffect(() => {
+    fetchUsers()
+  }, [])
 
   const contextValue = {
     users,
