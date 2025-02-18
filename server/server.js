@@ -54,5 +54,26 @@ app.get('/api/products/:productId/reviews/:reviewId', (req, res) => {
   res.send(`<p>ProductId: ${productId} & ReviewId: ${reviewId}<p/>`)
 })
 
+// Setting up a route to handle query parameter
+app.get('/api/v1/query', (req, res) => {
+  const { search, limit } = req.query
+
+  console.log(req.query)
+  // We'll work with the copy of the original products
+  let filteredProducts = [...products]
+
+  if (search) {
+    filteredProducts = filteredProducts.filter(product => {
+      return product.name.startsWith(search)
+    })
+  }
+
+  if (limit) {
+    filteredProducts = filteredProducts.slice(0, Number(limit))
+  }
+
+  res.status(200).json(filteredProducts)
+})
+
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
