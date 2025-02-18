@@ -1,25 +1,28 @@
 const express = require('express')
 const server = express()
 
-// Let's demonstrate middleware
-const logger = (req, res, next) => {
-  const method = req.method
-  const url = req.url
-  const date = new Date().getFullYear()
+const logger = require('./logger')
 
-  console.log(method, url, date) // logging
-  //   res.send('Testing Middleware!')
-  console.log('I am the logger middleware')
-  next()
-}
+server.use(logger)
 
-server.get('/', logger, (req, res) => {
+server.get('/', (req, res) => {
   console.log('I am the home route')
   res.send('<h1>Home page</h1>')
 })
 
 server.get('/about', (req, res) => {
+  console.log('About page')
   res.send('<h1>About page</h1>')
+})
+
+server.get('/api/cities', (req, res) => {
+  console.log('Cities')
+  res.send('<h1>Cities page</h1>')
+})
+
+server.get('/api/products', (req, res) => {
+  console.log('Products')
+  res.send('<h1>Products page</h1>')
 })
 
 server.listen(5000, () => {
