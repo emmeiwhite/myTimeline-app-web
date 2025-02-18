@@ -2,6 +2,9 @@ require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const StreamChat = require('stream-chat').StreamChat
+
+const streamClient = StreamChat.getInstance(process.env.STREAM_API_KEY, process.env.STREAM_SECRET)
 
 // Create Express app
 const app = express()
