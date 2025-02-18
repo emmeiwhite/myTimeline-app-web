@@ -1,32 +1,22 @@
+require('dotenv').config()
 const express = require('express')
-const server = express()
+const mongoose = require('mongoose')
+const cors = require('cors')
 
-const logger = require('./logger')
-const authenticate = require('./authenticate')
+// Create Express app
+const app = express()
+app.use(express.json())
+app.use(cors())
 
-server.use([logger, authenticate])
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.log(err))
 
-server.get('/', (req, res) => {
-  console.log('I am the home route')
-  res.send('<h1>Home page</h1>')
-})
+// Routes
+app.use('/api/messages', require('./routes/messageRoutes'))
+app.use('/api/users', require('./routes/userRoutes'))
 
-server.get('/about', (req, res) => {
-  console.log('About page')
-  res.send('<h1>About page</h1>')
-})
-
-server.get('/api/cities', (req, res) => {
-  console.log('Cities')
-  res.send('<h1>Cities page</h1>')
-})
-
-server.get('/api/products', (req, res) => {
-  console.log('Products')
-  console.log(req.user) // Modified by the authenticate middleware. We are getting the user info
-  res.send('<h1>Products page</h1>')
-})
-
-server.listen(5000, () => {
-  console.log('server running at port 5000')
-})
+const PORT = process.env.PORT || 5000
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
