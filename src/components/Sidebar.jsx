@@ -9,9 +9,9 @@ const Sidebar = () => {
       <ul>
         {users?.map(user => (
           <li
-            key={user?.id}
+            key={user?._id}
             className={`flex items-center p-2 cursor-pointer hover:bg-blue-400 rounded ${
-              currentUser?.id === user?.id ? 'bg-blue-400' : ''
+              currentUser?.id === user?._id ? 'bg-blue-400' : ''
             }`}
             onClick={() => setCurrentUser(user)}>
             <img

@@ -74,11 +74,12 @@ const AppProvider = ({ children }) => {
   async function fetchUsers() {
     try {
       const response = await axios.get('/api/users')
-      console.log(response)
+      setUsers(response.data)
     } catch (error) {
       console.log(error.response)
     }
   }
+
   useEffect(() => {
     fetchUsers()
   }, [])
