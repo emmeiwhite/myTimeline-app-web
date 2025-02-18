@@ -47,5 +47,12 @@ app.get('/api/products/:productId', (req, res) => {
   res.json(singleProduct)
 })
 
+// Complicated example for Route Parameters
+app.get('/api/products/:productId/reviews/:reviewId', (req, res) => {
+  const { productId, reviewId } = req.params
+
+  res.send(`<p>ProductId: ${productId} & ReviewId: ${reviewId}<p/>`)
+})
+
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
