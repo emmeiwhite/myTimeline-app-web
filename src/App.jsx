@@ -2,6 +2,10 @@ import ChatWindow from './components/ChatWindow'
 import Sidebar from './components/Sidebar'
 import { AppProvider } from './context/MessagesContext'
 
+import streamClient from './streamClient'
+
+console.log('Stream Client:', streamClient)
+
 function App() {
   return (
     <AppProvider>
