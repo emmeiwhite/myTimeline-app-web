@@ -32,9 +32,13 @@ router.post('/', async (req, res) => {
     })
     const savedMessage = await newMessage.save()
 
-    // 2️2. Send message to GetStream
-    const channel = streamClient.channel('messaging', chatId)
-    await channel.create() // Ensure the channel exists
+    // 2️. Send message to GetStream
+    const channel = streamClient.channel('messaging', chatId, {
+      created_by_id: senderId // Required for server-side auth
+    })
+
+    await channel.watch() // ✅ Ensures the channel exists or creates it
+
     await channel.sendMessage({
       text: content,
       user_id: senderId
