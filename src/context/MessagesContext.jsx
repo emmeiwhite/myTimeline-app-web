@@ -1,62 +1,23 @@
 import { createContext, useState, useContext, useEffect } from 'react'
 import axios from 'axios'
-// Our Users of one-to-one app
-/* ---
-const initialUsers = [
-  { id: 'user-a', name: 'Emmei', avatar: 'https://avatar.iran.liara.run/public/43' },
-  { id: 'user-b', name: 'Adi', avatar: 'https://avatar.iran.liara.run/public/41' }
-]
-  ---*/
+import streamClient, { connectUser } from '../streamClient'
 
-// Let's add dummy messages for Adi & Emmei
-/*
-const initialMessages = {
-  'user-a_user-b': [
-    { sender: 'user-a', content: 'Hi there!', timestamp: '2025-02-17T14:00:00Z' },
-    { sender: 'user-b', content: 'Hello, how are you?', timestamp: '2025-02-17T14:05:00Z' }
-  ]
-}
-*/
-/** A Change in initialMessages logic. We'll group each message with a senderId & a receiverId with a common chatId b/w two users. This approach seems more easy to implement and in querying from the BE as well  */
-
-/* ---
-
-const initialMessages = [
-  {
-    id: 'msg1',
-    chatId: 'user-a_user-b',
-    senderId: 'user-a',
-    receiverId: 'user-b',
-    content: 'Hi there!',
-    timestamp: '2025-02-17T14:00:00Z'
-  },
-  {
-    id: 'msg2',
-    chatId: 'user-a_user-b',
-    senderId: 'user-b',
-    receiverId: 'user-a',
-    content: 'Hello, how are you?',
-    timestamp: '2025-02-17T14:05:00Z'
-  }
-]
-  --- */
-
-// const initialMessages = {} //For testing purpose
 // Create Context
 const AppContext = createContext()
 
 // Context provider component
 const AppProvider = ({ children }) => {
   const [users, setUsers] = useState([])
-  // Let's switch between users to test the application | We have no authentication
+  const [messages, setMessages] = useState([])
+  const [currentUser, setCurrentUser] = useState(null) // Initially no chat partner selected
+  const [isStreamConnected, setIsStreamConnected] = useState(false)
 
-  // /* ---
+  // Test users (No auth, switch between them manually)
   const [loggedInUser, setLoggedInUser] = useState({
     _id: 'user-a',
     name: 'Emmei',
     avatar: 'https://avatar.iran.liara.run/public/43'
   })
-  // --- */
 
   /* ---
   const [loggedInUser, setLoggedInUser] = useState({
@@ -66,43 +27,96 @@ const AppProvider = ({ children }) => {
   })
   --- */
 
-  const [currentUser, setCurrentUser] = useState(null) // Initially no chat-partner would be selected
-  const [messages, setMessages] = useState() // Array to hold messages
-
-  // 1) We need to fetch the Users first (to join their ids to make chatId of two individuals)
-  async function fetchUsers() {
-    try {
-      const response = await axios.get('/api/users')
-      setUsers(response.data)
-    } catch (error) {
-      console.log(error.response)
-    }
-  }
-
+  // 1) Fetch Users
   useEffect(() => {
+    async function fetchUsers() {
+      try {
+        const response = await axios.get('/api/users')
+        setUsers(response.data)
+      } catch (error) {
+        console.log(error.response)
+      }
+    }
     fetchUsers()
   }, [])
 
-  // 2) Fetch messages when currentUser changes
-
-  async function fetchMessages() {
-    let chatId = [loggedInUser._id, currentUser._id].sort().join('_')
-    console.log('ChatId is:')
-    console.log(chatId)
-    // Similar way chatId should be generated in the BE as well while adding messages (Will check in a while)
-    try {
-      const response = await axios.get(`/api/messages/${chatId}`)
-      setMessages(response.data)
-    } catch (error) {
-      console.log(error.response)
-    }
-  }
-
+  // 2) Connect to Stream Chat API (Ensuring connection before using `channel`)
   useEffect(() => {
-    if (!currentUser) return // Don't fetch if no user is selected
+    if (!loggedInUser) return
+
+    const connectToStream = async () => {
+      try {
+        const tokenResponse = await axios.get(`/api/users/token/${loggedInUser._id}`)
+        const token = tokenResponse.data.token
+
+        await connectUser(loggedInUser._id, token)
+        setIsStreamConnected(true) // Mark Stream connection as established
+      } catch (error) {
+        console.error('❌ Stream connection error:', error)
+      }
+    }
+
+    connectToStream()
+
+    return () => {
+      streamClient.disconnectUser() // Cleanup on unmount
+    }
+  }, [loggedInUser])
+
+  // 3) Fetch messages when `currentUser` changes
+  useEffect(() => {
+    async function fetchMessages() {
+      if (!currentUser) return
+      let chatId = [loggedInUser._id, currentUser._id].sort().join('_')
+
+      console.log('ChatId is:', chatId)
+
+      try {
+        const response = await axios.get(`/api/messages/${chatId}`)
+        setMessages(response.data)
+      } catch (error) {
+        console.log(error.response)
+      }
+    }
+
     fetchMessages()
   }, [currentUser])
 
+  // 4) Real-time message listener (Only if Stream is connected)
+  useEffect(() => {
+    if (!isStreamConnected || !currentUser) return
+
+    const chatId = [loggedInUser._id, currentUser._id].sort().join('_')
+    console.log(`🔗 Subscribing to GetStream channel: ${chatId}`)
+
+    const handleNewMessage = event => {
+      console.log('📩 New message received:', event.message)
+      setMessages(prevMessages => [...prevMessages, event.message])
+    }
+
+    const setupChannel = async () => {
+      try {
+        const channel = streamClient.channel('messaging', chatId, {
+          members: [loggedInUser._id, currentUser._id]
+        })
+
+        await channel.watch() // Ensure channel is initialized
+        channel.on('message.new', handleNewMessage)
+
+        console.log(`✅ Listening for messages on channel: ${chatId}`)
+      } catch (error) {
+        console.error('❌ Error setting up channel:', error)
+      }
+    }
+
+    setupChannel()
+
+    return () => {
+      streamClient.off('message.new', handleNewMessage) // Cleanup listener on unmount
+    }
+  }, [isStreamConnected, currentUser])
+
+  // Context value
   const contextValue = {
     users,
     currentUser,

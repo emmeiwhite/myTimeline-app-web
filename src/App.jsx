@@ -1,6 +1,8 @@
 import ChatWindow from './components/ChatWindow'
 import Sidebar from './components/Sidebar'
 
+import { disconnectUser } from './streamClient'
+
 import { useEffect } from 'react'
 import streamClient, { connectUser } from './streamClient'
 import axios from 'axios'
@@ -27,7 +29,7 @@ function App() {
     fetchTokenAndConnect()
 
     return () => {
-      streamClient.disconnectUser() // Cleanup on unmount
+      disconnectUser() // ✅ Properly clean up connection
     }
   }, [loggedInUser])
 

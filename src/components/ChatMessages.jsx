@@ -2,7 +2,6 @@ import { useAppContext } from '../context/MessagesContext'
 
 const ChatMessages = () => {
   const { messages, loggedInUser, currentUser } = useAppContext()
-  console.log(messages)
 
   if (!currentUser) {
     return (
