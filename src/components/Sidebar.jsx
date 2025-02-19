@@ -1,7 +1,6 @@
 import { useAppContext } from '../context/MessagesContext'
 const Sidebar = () => {
   const { users, setCurrentUser, currentUser } = useAppContext()
-  console.log(users)
 
   return (
     <div className="p-4 w-1/4 bg-blue-300">

@@ -96,6 +96,17 @@ const AppProvider = ({ children }) => {
 
     const setupChannel = async () => {
       try {
+        if (!streamClient || !loggedInUser || !currentUser) return
+
+        // 🛑 Prevent self-chat
+        if (loggedInUser._id === currentUser._id) {
+          console.error('You cannot create a chat with yourself.')
+          return
+        }
+
+        const chatId = [loggedInUser._id, currentUser._id].sort().join('_')
+        console.log(`🔗 Subscribing to GetStream channel: ${chatId}`)
+
         const channel = streamClient.channel('messaging', chatId, {
           members: [loggedInUser._id, currentUser._id]
         })

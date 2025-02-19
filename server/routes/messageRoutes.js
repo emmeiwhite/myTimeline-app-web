@@ -39,10 +39,13 @@ router.post('/', async (req, res) => {
 
     await channel.watch() // ✅ Ensures the channel exists or creates it
 
-    await channel.sendMessage({
-      text: content,
-      user_id: senderId
+    // ✅ Log response from GetStream
+    const sendMessageResponse = await channel.sendMessage({
+      text: content, // ✅ Use the actual message content
+      user_id: senderId // ✅ Use senderId instead of loggedInUserId
     })
+
+    console.log('Message sent response:', sendMessageResponse)
 
     res.json(savedMessage)
   } catch (err) {
