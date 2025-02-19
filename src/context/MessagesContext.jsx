@@ -48,12 +48,23 @@ const AppContext = createContext()
 // Context provider component
 const AppProvider = ({ children }) => {
   const [users, setUsers] = useState([])
+  // Let's switch between users to test the application | We have no authentication
 
+  // /* ---
   const [loggedInUser, setLoggedInUser] = useState({
     _id: 'user-a',
     name: 'Emmei',
     avatar: 'https://avatar.iran.liara.run/public/43'
   })
+  // --- */
+
+  /* ---
+  const [loggedInUser, setLoggedInUser] = useState({
+    _id: 'user-b',
+    name: 'Adi',
+    avatar: 'https://avatar.iran.liara.run/public/41'
+  })
+  --- */
 
   const [currentUser, setCurrentUser] = useState(null) // Initially no chat-partner would be selected
   const [messages, setMessages] = useState() // Array to hold messages
