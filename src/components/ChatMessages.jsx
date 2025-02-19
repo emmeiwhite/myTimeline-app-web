@@ -26,7 +26,7 @@ const ChatMessages = () => {
             const isMe = msg.senderId === loggedInUser._id
             return (
               <li
-                key={msg.timestamp}
+                key={msg._id}
                 className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                 <div
                   className={`p-2 max-w-xs rounded-lg ${
